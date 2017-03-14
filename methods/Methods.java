@@ -1,5 +1,10 @@
 package methods;
 
+/**
+ * The main method to execute the program
+ * @author CPSC 449 Team 23
+ */
+
 public class Methods {
 
 	static String jar_name = null;
@@ -21,6 +26,17 @@ public class Methods {
 	static final String SYNOPSIS_HELP = "\nThis program interprets commands of the format '(<method> {arg}*)' on the command line, finds corresponding\n"
 		+ "methods in <class-name>, and executes them, printing the result to sysout.";
 
+	static final String HELP = "q           : Quit the program.\n"
+		+ "v           : Toggle verbose mode (stack traces).\n"
+		+ "f           : List all known functions.\n"
+		+ "?           : Print this helpful text.\n"
+		+ "<expression>: Evaluate the expression.\n"
+		+ "Expressions can be integers, floats, strings (surrounded in double quotes) or function\n"
+		+ "calls of the form '(identifier {expression}*)'.\n";
+
+	/**
+	 * Prints out the synopsis message plus the additional help statement
+	 */
 	public static void printHelp(){
 		System.out.println(SYNOPSIS);
 		System.out.println(SYNOPSIS_HELP);
@@ -40,7 +56,7 @@ public class Methods {
 			for (int i = 0; i < args.length; i++) {
 				String input = args[i];
 				// checking validity of the inputted qualifiers
-				if (input.contains("-")) {
+				if (input.startsWith("-")) {
 					// checks if long qualifiers are valid
 					if (input.startsWith("--")) {
 						String longQualifier = input.substring(2);
@@ -90,8 +106,26 @@ public class Methods {
 				printHelp();
 		}
 
-		//TODO: Fatal Errors 5 & 6 
+		try {
+			JarExtractor.jarExtractor(jar_name, class_name);	
+		}
+		catch (Exception e) {
+
+		}
+
+		System.out.println("class loaded! everythings ok :)");
+
+		// TODO: Fatal Errors 5 & 6 
 		// fatal error 5: could not load jar file
 		// fatal error 6: could not find class
+
+//		System.out.println(HELP);
+//		Scanner sc = new Scanner(System.in);
+
+
+		// start infinite loop & wait for program interaction
+		//while (1) {
+
+		//}
 	}
 }
