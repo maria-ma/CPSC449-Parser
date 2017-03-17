@@ -32,7 +32,7 @@ public class Methods {
 		+ "?           : Print this helpful text.\n"
 		+ "<expression>: Evaluate the expression.\n"
 		+ "Expressions can be integers, floats, strings (surrounded in double quotes) or function\n"
-		+ "calls of the form '(identifier {expression}*)'.\n";
+		+ "calls of the form '(identifier {expression}*)'.";
 
 	/**
 	 * Prints out the synopsis message plus the additional help statement
@@ -111,15 +111,8 @@ public class Methods {
 		}
 		catch (Exception e) {
 
-		}
-
-		System.out.println("class loaded! everythings ok :)");
-
-		// TODO: Fatal Errors 5 & 6 
-		// fatal error 5: could not load jar file
-		// fatal error 6: could not find class
-
-//		System.out.println(HELP);
+		} 
+		System.out.println(HELP);
 //		Scanner sc = new Scanner(System.in);
 
 
