@@ -1,5 +1,7 @@
 package methods;
-
+import java.util.*;
+import java.lang.reflect.*;
+import java.awt.*;
 /**
  * The main method to execute the program
  * @author CPSC 449 Team 23
@@ -113,12 +115,40 @@ public class Methods {
 
 		} 
 		System.out.println(HELP);
-//		Scanner sc = new Scanner(System.in);
+		Scanner sc = new Scanner(System.in);
+		String input;
 
-
-		// start infinite loop & wait for program interaction
-		//while (1) {
-
-		//}
+//		start infinite loop & wait for program interaction
+		while (true) {
+			System.out.print("> ");
+			if (sc.hasNextLine())
+				input = sc.nextLine();
+			else 
+				break;
+			input = input.trim();
+			switch(input) {
+				case "?":
+					System.out.println(HELP);
+					break;
+				case "f":
+					System.out.println("print function list here");
+					break;
+				case "v":
+					if (verbose_mode == false) {
+						verbose_mode = true;
+						System.out.println("Verbose on.");
+					}
+					else {
+						verbose_mode = false;
+						System.out.println("Verbose off.");
+					}
+					break;
+				case "q":
+					System.out.println("bye.");
+					System.exit(0);
+				default: 
+					System.out.println("evaluate expression function here");
+			}
+		}
 	}
 }
