@@ -131,7 +131,8 @@ public class Methods {
 					System.out.println(HELP);
 					break;
 				case "f":
-					System.out.println("print function list here");
+					//System.out.println("print function list here");
+					JarExtractor.printFuncList();
 					break;
 				case "v":
 					if (verbose_mode == false) {
