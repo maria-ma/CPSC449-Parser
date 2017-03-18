@@ -1,7 +1,9 @@
 package methods;
 import java.util.*;
+import java.io.*;
 import java.lang.reflect.*;
 import java.awt.*;
+import java.lang.*;
 /**
  * The main method to execute the program
  * @author CPSC 449 Team 23
@@ -12,6 +14,8 @@ public class Methods {
 	static String jar_name = null;
 	static String class_name = "Commands";
 	static boolean verbose_mode = false;
+	String[] methodNames;
+	static Class targetClass;
 
 	static final String SYNOPSIS = "Synopsis:\n"
 		+ "  methods\n"
@@ -43,6 +47,72 @@ public class Methods {
 		System.out.println(SYNOPSIS);
 		System.out.println(SYNOPSIS_HELP);
 		System.exit(0);
+	}
+
+	/**
+	 * Returns the stack trace from an arbitrary exception error
+	 * @param	e	the exception thrown when attempting to parse/evaluate an expression
+	 * @Returns		the string equivalent of a stack trace
+	 */
+	public static String getStackTrace(Exception e){
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		e.printStackTrace(pw);
+		return sw.toString();
+	}
+
+	/**
+	 * Prints the non-fatal error message, which includes:
+	 * 1. an explanatory message of the error and the error's offset
+	 * 2. an exact copy of the input line
+	 * 3. a pointer to the offset of the error
+	 * 4. an additional stack trace if verbose mode is on
+	 * @param	input		the user's inputted message during the program interaction
+	 * @param	stackTrace 	the string equivalent of a stack trace error
+	 * @param	offset 		an integer that indicates the occurence of the error
+	 * @param	verbose		a boolean value which checks if verbose mode is on or not
+	 */
+	public static void printNonFatal(String input, String stackTrace, int offset, boolean verbose){
+		String explanation = stackTrace.substring((stackTrace.indexOf(":") + 2), stackTrace.indexOf("\n"));
+		// printing out the stack trace error message and the input
+		System.out.println(explanation + " at offset " + offset + "\n" + input + "\n");
+		// printing out the pointer
+		for (int i = 0; i < offset; i ++)
+			System.out.print("-");
+		System.out.println("^");
+		if(verbose == true)
+			System.out.println(stackTrace);
+	}
+
+	/**
+	 * Prints the list of functions in the loaded class
+	 */
+	public static void printFuncList(){
+		Method[] methods = targetClass.getDeclaredMethods();
+		for (int i = 0; i < methods.length; i++) {
+			System.out.print("(");
+			// get function name
+			String methodName = methods[i].getName().toLowerCase();
+			System.out.print(methodName);
+			// get function types
+			Class[] parameterTypes = methods[i].getParameterTypes();
+			for (int j = 0; j < parameterTypes.length; j++) {
+				String paramName = parameterTypes[j].getSimpleName().toLowerCase();
+				paramName = checkName(paramName);
+				System.out.print(" " + paramName);
+			}
+			System.out.print(") : ");
+			// print return type
+			String returnName = methods[i].getReturnType().getSimpleName().toLowerCase();
+			returnName = checkName(returnName);
+			System.out.println(returnName);
+		}
+	}
+
+	public static String checkName(String tmp) {
+		if (tmp.equals("integer"))
+			tmp = tmp.substring(0,3);
+		return tmp;
 	}
 
 	public static void main(String[] args) {
@@ -109,11 +179,15 @@ public class Methods {
 		}
 
 		try {
-			JarExtractor.jarExtractor(jar_name, class_name);	
+			JarLoader loader = new JarLoader();
+			targetClass = loader.jarLoad(jar_name, class_name);	
 		}
-		catch (Exception e) {
-
+		catch (IOException e) {
+			FatalErrors.invalidFile(jar_name);
 		} 
+		catch(ClassNotFoundException e) {
+			FatalErrors.invalidClass(class_name);
+		}
 		System.out.println(HELP);
 		Scanner sc = new Scanner(System.in);
 		String input;
@@ -132,7 +206,7 @@ public class Methods {
 					break;
 				case "f":
 					//System.out.println("print function list here");
-					JarExtractor.printFuncList();
+					printFuncList();
 					break;
 				case "v":
 					if (verbose_mode == false) {
@@ -148,7 +222,20 @@ public class Methods {
 					System.out.println("bye.");
 					System.exit(0);
 				default: 
-					System.out.println("evaluate expression function here");
+					try {
+						ParseTree p = new ParseTree(input, targetClass);
+						p.dotest();
+					}
+					catch(Exception e){
+
+					}
+					// check input is func
+					//Method[] methods = JarExtractor.class.getDeclaredMethods();
+
+					//for (int i = 0; i < methods.length; i++)
+					//	methodNames[i] = methods[i].getName().toLowerCase();
+					//if 
+					// check input is value
 			}
 		}
 	}
