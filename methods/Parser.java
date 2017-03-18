@@ -37,25 +37,52 @@ public class Parser {
 		
 		if(input.startsWith("\"")){
 			focus.setType("String");
+			input = input.substring(1, (input.length()-1));
 			focus.setData(input);
 		}
-		else{
-			if(input.contains(".")){
-				focus.setType("float");
-				focus.setData(input);
+		else if ((input.startsWith("-")) || (input.startsWith("+")) || (Character.isDigit(input.charAt(0)))) {	
+			boolean checkNum = checkDigit(input);
+			if (checkNum == true) {		
+				if(input.contains(".")){
+					focus.setType("float");
+					focus.setData(input);
+				}
+				else{
+					focus.setType("int");
+					focus.setData(input);
+				}					
 			}
-			else{
-				focus.setType("int");
-				focus.setData(input);
-			}
+			else
+				System.out.println("throw unmatched type error here");
 		}
+		else
+			System.out.println("throw unmatched type error here");
 	}
 	
+	public boolean checkDigit(String input) {
+		boolean digitOK = true;
+		for (int i = 1; i < input.length(); i++) {
+			if (!(Character.isDigit(input.charAt(i))) && (input.charAt(i) != '.'))
+				digitOK = false;
+		}
+		return digitOK;
+	}
+
 	//CHOPPER IS HERE JUST FYI
 	public void chopper(ArrayList<String> choppedlist,String input){
 		
 		if(input.length()==0){
 			//do nothing plz
+		}
+		else if(input.substring(0,1).equals("\"")) {
+			int count = 1;
+			if (!(input.substring(1).contains("\"")))
+				System.out.println("throw cant find end of string exception here");
+			else {
+				for(int i = 1; i < (input.substring(1,(input.lastIndexOf("\"")+1)).length()); i++)
+					count++;
+				choppedlist.add(input.substring(0,count+1));
+			}
 		}
 		else if(!input.contains(" ")){
 			choppedlist.add(input);
